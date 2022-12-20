@@ -120,6 +120,7 @@ namespace ChatApplication.ViewModels
             }
         }
 
+
         public bool CanBeep
         {
             get
@@ -165,7 +166,7 @@ namespace ChatApplication.ViewModels
         {
             get
             {
-                return _searchCommand ?? (_searchCommand = new SimpleCommand(() => SearchForUser(), () => CanExecute));
+                return _searchCommand ?? (_searchCommand = new SimpleCommand(() => SearchForUser(), () => true));
             }
         }
         
@@ -173,7 +174,7 @@ namespace ChatApplication.ViewModels
         {
             get
             {
-                return _removeFilterCommand ?? (_removeFilterCommand = new SimpleCommand(() => RemoveFilter(), () => CanExecute));
+                return _removeFilterCommand ?? (_removeFilterCommand = new SimpleCommand(() => RemoveFilter(), () => true));
             }
         }
         
@@ -189,7 +190,7 @@ namespace ChatApplication.ViewModels
         {
             get
             {
-                return _loadCommand ?? (_loadCommand = new Commands.ParameterCommand(LoadChat, param => CanExecute));
+                return _loadCommand ?? (_loadCommand = new Commands.ParameterCommand(LoadChat, param => true));
             }
         }
         
@@ -205,7 +206,7 @@ namespace ChatApplication.ViewModels
         {
             get
             {
-                return _returnCommand ?? (_returnCommand = new SimpleCommand(() => ReturnToChat(), () => CanExecute));
+                return _returnCommand ?? (_returnCommand = new SimpleCommand(() => ReturnToChat(), () => true));
             }
         }
 

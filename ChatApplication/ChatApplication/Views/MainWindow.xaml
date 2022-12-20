@@ -48,7 +48,6 @@
                                 <VisualBrush.Visual>
                                     <Label Content="Search for a user..." 
                                            Foreground="LightGray"
-                                           
                                            />
                                 </VisualBrush.Visual>
                             </VisualBrush>
@@ -151,7 +150,7 @@
                                 Width="75"
                                 Height="75"
                                 BorderThickness="1"
-                                BorderBrush="#6657d9"
+                                BorderBrush="#463a5c"
                                 Command="{Binding DataContext.LoadCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                 CommandParameter="{Binding time}"
                         >
@@ -214,12 +213,12 @@
                     BorderThickness="0"  
                     Margin="10,10,10,10" 
                     Padding="8" >
-            <Button.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" 
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" 
                                     Value="8"/>
-                </Style>
-            </Button.Resources>
+                    </Style>
+                </Button.Resources>
             </Button>
 
 
@@ -241,7 +240,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border CornerRadius="10">
-                                <TextBlock Height="Auto" 
+                                    <TextBlock Height="Auto" 
                                            Text="{Binding Msg}" 
                                            Foreground="#b3afaf" 
                                            HorizontalAlignment="Stretch" 
@@ -290,9 +289,9 @@
                              HorizontalContentAlignment="Left" 
                              VerticalContentAlignment="Center">
                             <TextBox.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="9"/>
-                            </Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="9"/>
+                                </Style>
                             </TextBox.Resources>
                         </TextBox>
 
@@ -393,7 +392,7 @@
                         </TextBlock.Style>
                     </TextBlock>
 
-                    
+
                     <Label Content="Port" 
                            Grid.Row="0" 
                            Grid.Column="4" 
@@ -431,12 +430,12 @@
                            FontWeight="Bold" 
                            Foreground="#b3afaf" />
                     <StackPanel Grid.Row="1" Grid.Column="6" Background="#2c2f33">
-                    <ScrollViewer HorizontalAlignment="Center"
+                        <ScrollViewer HorizontalAlignment="Center"
                                   VerticalScrollBarVisibility="Hidden"/>
-                    <ItemsControl ItemsSource="{Binding SystemMessages}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Height="Auto" 
+                        <ItemsControl ItemsSource="{Binding SystemMessages}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Height="Auto" 
                                            FontFamily="Verdana" 
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
@@ -444,11 +443,11 @@
                                            Foreground="#b3afaf"        
                                            Text="{Binding Msg}" 
                                            />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-            </StackPanel>
+                    </StackPanel>
                 </Grid>
             </StackPanel>
         </StackPanel>
