@@ -33,7 +33,6 @@ namespace ChatApplication.Assets
                     }
                 }
             }
-            Console.WriteLine(Messages.Count);
             return Messages;
         }
 

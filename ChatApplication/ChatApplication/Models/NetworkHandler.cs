@@ -86,7 +86,7 @@ namespace ChatApplication.Assets
                 clientThread.Start(s);
                 if (stopThread == null || !stopThread.IsAlive)
                 {
-                    stopThread = new Thread(WaitStop);
+                    stopThread = new Thread(Disconnect);
                     stopThread.Start();
                 }
             }
@@ -100,7 +100,7 @@ namespace ChatApplication.Assets
                 clientThread = new Thread(EstablishConnection);
                 clientThread.Start(s);
                 stopThread.Abort();
-                stopThread = new Thread(WaitStop);
+                stopThread = new Thread(Disconnect);
                 stopThread.Start();
             }
         }
@@ -109,7 +109,7 @@ namespace ChatApplication.Assets
         {
             if (connection.Client != null)
             {
-                Message message = new Message() { Msg = "STOP", Username = User.Name, Type = "abort" };
+                Message message = new Message() { Msg = "Disconnect", Username = User.Name, Type = "abort" };
                 connection.Send(message);
                 CanOnlyRead = false;
 
@@ -140,10 +140,9 @@ namespace ChatApplication.Assets
                 connection.Client.Close();
             }
         }
-        public void WaitStop()
+        public void Disconnect()
         {
-            Console.WriteLine("wait stop");
-            while (connection?.Data != "STOP")
+            while (connection?.Data != "Disconnect")
             {
             }
             foreach (Chat c in HelpFunctions.GetChatList())
@@ -186,7 +185,7 @@ namespace ChatApplication.Assets
                 listenThread.Start(l);
                 if (stopThread == null || !stopThread.IsAlive)
                 {
-                    stopThread = new Thread(WaitStop);
+                    stopThread = new Thread(Disconnect);
                     stopThread.Start();
                 }
             }
@@ -200,7 +199,7 @@ namespace ChatApplication.Assets
                 listenThread = new Thread(EstablishConnection);
                 listenThread.Start(l);
                 stopThread.Abort();
-                stopThread = new Thread(WaitStop);
+                stopThread = new Thread(Disconnect);
                 stopThread.Start();
             }
         }
@@ -223,10 +222,10 @@ namespace ChatApplication.Assets
                         else
                         {
                             CanOnlyRead = false;
-                            throw (new PortProblemException("Invalid port"));
+                            throw (new ConnectionException("Invalid port"));
                         }
                     }
-                    catch (PortProblemException e)
+                    catch (ConnectionException e)
                     {
                         Console.WriteLine("NoPortEx: {0}", e.Message);
                         MessageBox.Show("Invalid port", "Chatify by A3 Studio", MessageBoxButton.OK);
@@ -243,11 +242,10 @@ namespace ChatApplication.Assets
                 Console.WriteLine("Could not create a new connection");
             }
         }
-        public class PortProblemException : Exception
+        public class ConnectionException : Exception
         {
-            public PortProblemException(string message) : base(message)
+            public ConnectionException(string message) : base(message)
             {
-
             }
         }
     }

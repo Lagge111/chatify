@@ -128,6 +128,7 @@ namespace ChatApplication.Models
                 }
                 catch (IOException e)
                 {
+                    Console.WriteLine(e.ToString());
                     MessageBox.Show("Lost connection", "Chatify by A3 Studio", MessageBoxButton.OK);
                 }
                 catch (ArgumentNullException e)
@@ -180,6 +181,7 @@ namespace ChatApplication.Models
                 }
                 catch (IOException e)
                 {
+                    Console.WriteLine(e.ToString());
                     MessageBox.Show("Lost connection", "Chatify by A3 Studio", MessageBoxButton.OK);
                 }
                 catch (SocketException e)
