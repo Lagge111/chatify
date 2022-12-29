@@ -20,6 +20,7 @@ namespace ChatApplication.Assets
         private Models.Connection connection;
         private User _user;
         Thread listenThread, clientThread, stopThread;
+        private string _info;
 
         public NetworkHandler(User user)
         {
@@ -49,6 +50,19 @@ namespace ChatApplication.Assets
             get
             {
                 return _user;
+            }
+        }
+
+        public String Info
+        {
+            get
+            {
+                return _info;
+            }
+
+            set
+            {
+                _info = value;
             }
         }
 
@@ -124,7 +138,8 @@ namespace ChatApplication.Assets
                 connection.userAdded = false;
                 Messages.Clear();
 
-                MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
+                _info = "Connection Lost";
+                //MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
                 stopThread.Abort();
 
                 if (connection.Listner != null)
@@ -159,7 +174,8 @@ namespace ChatApplication.Assets
             {
                 CanOnlyRead = false;
 
-                MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
+                _info = "Connection Lost";
+                //MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
 
                 if (connection.Listner != null)
                 {
@@ -228,7 +244,8 @@ namespace ChatApplication.Assets
                     catch (ConnectionException e)
                     {
                         Console.WriteLine("NoPortEx: {0}", e.Message);
-                        MessageBox.Show("Invalid port", "Chatify by A3 Studio", MessageBoxButton.OK);
+                        _info = "Invalid port";
+                        //MessageBox.Show("Invalid port", "Chatify by A3 Studio", MessageBoxButton.OK);
                     }
                 }
                 else if (type.ToString() == "s")

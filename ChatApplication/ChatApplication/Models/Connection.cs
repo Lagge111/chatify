@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace ChatApplication.Models
 {
@@ -22,15 +23,22 @@ namespace ChatApplication.Models
         private TcpClient _client;
         private NetworkStream _stream;
         private String _data;
+        private String _info;
         private User _user;
         private Chat theChat;
         private DateTime time;
+        private Boolean _canSend;
+
+
+        private string chatRequestStatus;
 
         public Connection(User user)
         {
+            _canSend = false;
             userAdded = false;
             _user = user;
             time = DateTime.Now;
+            chatRequestStatus= "waiting";
 
             theChat = new Chat()
             {
@@ -49,6 +57,18 @@ namespace ChatApplication.Models
             set
             {
                 theChat = value;
+            }
+        }
+
+        public Boolean CanSend
+        {
+            get
+            {
+                return _canSend;
+            }
+            set
+            {
+                _canSend = value;
             }
         }
 
@@ -77,6 +97,34 @@ namespace ChatApplication.Models
                 _data = value;
             }
         }
+
+
+        public String Info
+        {
+            get
+            {
+                return _info;
+            }
+
+            set
+            {
+                _info = value;
+            }
+        }
+
+        public String ChatRequestStatus
+        {
+            get
+            {
+                return chatRequestStatus;
+            }
+
+            set
+            {
+                chatRequestStatus = value;
+            }
+        }
+
         public TcpListener Listner
         {
             get
@@ -114,8 +162,10 @@ namespace ChatApplication.Models
                 {
                     _client = new TcpClient(ipadress, port);
                     _stream = _client.GetStream();
+                    _info = "Chat request sent - waiting for answer...";
                     if (_stream != null)
                     {
+
                         while ((i = _stream.Read(bytes, 0, bytes.Length)) != 0)
                         {
                             HandleData(i, bytes);
@@ -129,7 +179,8 @@ namespace ChatApplication.Models
                 catch (IOException e)
                 {
                     Console.WriteLine(e.ToString());
-                    MessageBox.Show("Lost connection", "Chatify by A3 Studio", MessageBoxButton.OK);
+                    _info = "Lost connection"; 
+                    //MessageBox.Show("Lost connection", "Chatify by A3 Studio", MessageBoxButton.OK);
                 }
                 catch (ArgumentNullException e)
                 {
@@ -138,7 +189,8 @@ namespace ChatApplication.Models
                 catch (SocketException e)
                 {
                     Console.WriteLine("SocketException: {0}", e);
-                    MessageBox.Show("Nobody listening on this port", "Chatify by A3 Studio", MessageBoxButton.OK);
+                    _info = "Nobody listening on this port";
+                    //MessageBox.Show("Nobody listening on this port", "Chatify by A3 Studio", MessageBoxButton.OK);
 
                 }
             }
@@ -151,20 +203,38 @@ namespace ChatApplication.Models
                     _listner.Start();
                     while (true)
                     {
-                        Console.WriteLine("Waiting for a connection... ");
-
-                        Client = _listner.AcceptTcpClient();
-
-                        MessageBoxResult result = MessageBox.Show("Another user wants to chat with you. Would you like to accept?", "Chatify by A3 Studio", MessageBoxButton.YesNo);
-                        if (result == MessageBoxResult.No)
+                        while (chatRequestStatus == "waiting")
                         {
-                            MessageBox.Show("Chat request denied", "Chatify by A3 Studio", MessageBoxButton.OK);
-                            break;
+                            _info = "Waiting for a connection... ";
+                            Client = _listner.AcceptTcpClient();
+                            _info = "Another user wants to chat. Would you like to ACCEPT or DENIE?";
+                            chatRequestStatus = "pending";
+                        }
+                        //MessageBoxResult result = MessageBox.Show("Another user wants to chat with you. Would you like to accept?", "Chatify by A3 Studio", MessageBoxButton.YesNo);
+                        
+                        while (chatRequestStatus== "pending")
+                        {
+
                         }
 
+                        if (chatRequestStatus == "denied")
+                        {
+                            _stream = Client.GetStream();
+                            Message rejectedMessage = new Message() { Type = "rejected"};
+                            Send(rejectedMessage);
+                            _info="You denied the chat request";
+                            _stream = null;
+                            break;
+                            
+                        }
+
+                        _info = "Connected";
+                        _canSend = true;
                         Console.WriteLine("Connected!");
                         _data = null;
                         _stream = Client.GetStream();
+                        Message acceptedMessage = new Message() { Type = "accepted" };
+                        Send(acceptedMessage);
                         if (_stream != null)
                         {
                             while ((i = _stream.Read(bytes, 0, bytes.Length)) != 0)
@@ -182,7 +252,8 @@ namespace ChatApplication.Models
                 catch (IOException e)
                 {
                     Console.WriteLine(e.ToString());
-                    MessageBox.Show("Lost connection", "Chatify by A3 Studio", MessageBoxButton.OK);
+                    _info = "Lost connection";
+                    //MessageBox.Show("Lost connection", "Chatify by A3 Studio", MessageBoxButton.OK);
                 }
                 catch (SocketException e)
                 {
@@ -218,13 +289,21 @@ namespace ChatApplication.Models
             }
             else if (deserializedMessage.Type == "abort")
             {
-                _data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                Console.WriteLine("The other user disconnected - closing the stream and client");
-                _stream = null;
-                _client.GetStream().Close();
-                _client.Close();
+                _canSend = false;
+                _info = "The other user has disconnected";
+                ShutDownConnection();
             }
-            else
+            else if (deserializedMessage.Type == "accepted")
+            {
+                _canSend = true;
+                _info = "Connected!";
+                
+            } else if (deserializedMessage.Type == "rejected")
+            {
+                _canSend = false;
+                _info = "Chat request rejected!";
+                ShutDownConnection();
+            } else
             {
                 Console.WriteLine("An unexpected message type was sent");
             }
@@ -245,6 +324,16 @@ namespace ChatApplication.Models
         {
             Message message = new Message() { Type = "beep" };
             Send(message);
+        }
+
+        public void AcceptRequest()
+        {
+            chatRequestStatus = "accepted";
+        }
+
+        public void DenieRequest()
+        {
+            chatRequestStatus= "denied";
         }
 
         public void SendMessage(Message incomingMessage)
@@ -292,6 +381,13 @@ namespace ChatApplication.Models
             Send(message);
         }
 
+        public void ShutDownConnection()
+        {
+            _stream = null;
+            _client.GetStream().Close();
+            _client.Close();
+        }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -300,6 +396,8 @@ namespace ChatApplication.Models
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
+
+        
     }
 }
 
