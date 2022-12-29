@@ -5,7 +5,6 @@ using ChatApplication.Commands;
 using ChatApplication.Models;
 using System.Threading;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ChatApplication.Assets;
@@ -62,6 +61,10 @@ namespace ChatApplication.ViewModels
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
                             SystemMessages.Clear();
+                            if (networkHandler.Connection.Info == "Connected!")
+                            {
+                                Messages.Clear();
+                            }
                             SystemMessages.Add(new Message() { Msg = networkHandler.Connection.Info, Username = User.Name });
                             networkHandler.Connection.Info = null;
                         });
@@ -199,7 +202,7 @@ namespace ChatApplication.ViewModels
         {
             get
             {
-                    return _beepCommand ?? (_beepCommand = new SimpleCommand(() => networkHandler.Connection.SendBeep(), () => CanBeep));
+                    return _beepCommand ?? (_beepCommand = new SimpleCommand(() => networkHandler.Connection.SendBeep(), () => CanSend));
             }
 
         }

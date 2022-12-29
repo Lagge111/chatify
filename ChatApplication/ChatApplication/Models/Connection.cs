@@ -2,14 +2,11 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Markup;
+
 
 namespace ChatApplication.Models
 {
@@ -207,7 +204,7 @@ namespace ChatApplication.Models
                         {
                             _info = "Waiting for a connection... ";
                             Client = _listner.AcceptTcpClient();
-                            _info = "Another user wants to chat. Would you like to ACCEPT or DENIE?";
+                            _info = "Another user wants to chat, do you want to accept or denie?";
                             chatRequestStatus = "pending";
                         }
                         //MessageBoxResult result = MessageBox.Show("Another user wants to chat with you. Would you like to accept?", "Chatify by A3 Studio", MessageBoxButton.YesNo);
@@ -228,7 +225,7 @@ namespace ChatApplication.Models
                             
                         }
 
-                        _info = "Connected";
+                        _info = "Connected!";
                         _canSend = true;
                         Console.WriteLine("Connected!");
                         _data = null;
@@ -242,6 +239,7 @@ namespace ChatApplication.Models
                                 HandleData(i, bytes);
                                 if (_stream == null)
                                 {
+                                    _canSend = false;
                                     break;
                                 }
                             }
@@ -289,7 +287,6 @@ namespace ChatApplication.Models
             }
             else if (deserializedMessage.Type == "abort")
             {
-                _canSend = false;
                 _info = "The other user has disconnected";
                 ShutDownConnection();
             }
@@ -300,7 +297,6 @@ namespace ChatApplication.Models
                 
             } else if (deserializedMessage.Type == "rejected")
             {
-                _canSend = false;
                 _info = "Chat request rejected!";
                 ShutDownConnection();
             } else
@@ -383,6 +379,7 @@ namespace ChatApplication.Models
 
         public void ShutDownConnection()
         {
+            _canSend = false;
             _stream = null;
             _client.GetStream().Close();
             _client.Close();

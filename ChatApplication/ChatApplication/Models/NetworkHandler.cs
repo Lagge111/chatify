@@ -1,14 +1,7 @@
 ﻿using ChatApplication.Models;
-using ChatApplication.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Interop;
-using System.Windows;
 using System.Collections.ObjectModel;
 
 namespace ChatApplication.Assets
@@ -134,10 +127,11 @@ namespace ChatApplication.Assets
                         Chats.Add(c);
                     }
                 }
+                connection.CanSend = false;
                 connection.objectCreated = false;
                 connection.userAdded = false;
                 Messages.Clear();
-
+                
                 _info = "Connection Lost";
                 //MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
                 stopThread.Abort();
@@ -167,6 +161,7 @@ namespace ChatApplication.Assets
                     Chats.Add(c);
                 }
             }
+            connection.CanSend = false;
             connection.objectCreated = false;
             connection.userAdded = false;
 

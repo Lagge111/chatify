@@ -432,20 +432,21 @@
                            FontWeight="Bold" 
                            Foreground="#b3afaf" />
                     <StackPanel Grid.Row="1" Grid.Column="6" Background="#2c2f33">
-                        <ScrollViewer HorizontalAlignment="Center"
-                                  VerticalScrollBarVisibility="Hidden"/>
                         <ItemsControl ItemsSource="{Binding SystemMessages}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Height="Auto"
-                                           TextWrapping="Wrap"
+                                    <Label Height="Auto"
                                            FontFamily="Verdana" 
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            FontSize="10"
-                                           Foreground="#b3afaf"        
-                                           Text="{Binding Msg}" 
-                                           />
+                                           Foreground="#b3afaf"
+                                           >
+                                        
+                                        <TextBlock TextWrapping="Wrap"
+                                           Text="{Binding Msg}"
+                                                   Margin="0,0,0,0"/>
+                                    </Label>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
