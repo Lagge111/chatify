@@ -177,7 +177,6 @@ namespace ChatApplication.Models
                 {
                     Console.WriteLine(e.ToString());
                     _info = "Lost connection"; 
-                    //MessageBox.Show("Lost connection", "Chatify by A3 Studio", MessageBoxButton.OK);
                 }
                 catch (ArgumentNullException e)
                 {
@@ -187,8 +186,6 @@ namespace ChatApplication.Models
                 {
                     Console.WriteLine("SocketException: {0}", e);
                     _info = "Nobody listening on this port";
-                    //MessageBox.Show("Nobody listening on this port", "Chatify by A3 Studio", MessageBoxButton.OK);
-
                 }
             }
             else if (type == "l")
@@ -207,11 +204,9 @@ namespace ChatApplication.Models
                             _info = "Another user wants to chat, do you want to accept or denie?";
                             chatRequestStatus = "pending";
                         }
-                        //MessageBoxResult result = MessageBox.Show("Another user wants to chat with you. Would you like to accept?", "Chatify by A3 Studio", MessageBoxButton.YesNo);
-                        
+
                         while (chatRequestStatus== "pending")
                         {
-
                         }
 
                         if (chatRequestStatus == "denied")
@@ -222,7 +217,6 @@ namespace ChatApplication.Models
                             _info="You denied the chat request";
                             _stream = null;
                             break;
-                            
                         }
 
                         _info = "Connected!";
@@ -251,7 +245,6 @@ namespace ChatApplication.Models
                 {
                     Console.WriteLine(e.ToString());
                     _info = "Lost connection";
-                    //MessageBox.Show("Lost connection", "Chatify by A3 Studio", MessageBoxButton.OK);
                 }
                 catch (SocketException e)
                 {
@@ -313,7 +306,6 @@ namespace ChatApplication.Models
                 Byte[] data = System.Text.Encoding.ASCII.GetBytes(json);
                 _stream.Write(data, 0, data.Length);
             }
-
         }
 
         public void SendBeep()
@@ -393,8 +385,6 @@ namespace ChatApplication.Models
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
-
-        
     }
 }
 

@@ -71,12 +71,12 @@ namespace ChatApplication.ViewModels
                     }
                     if (networkHandler != null && networkHandler.Info != null)
                     {
-                    App.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        SystemMessages.Clear();
-                        SystemMessages.Add(new Message() { Msg = networkHandler.Info, Username = User.Name });
-                        networkHandler.Info = null;
-                    });
+                        App.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            SystemMessages.Clear();
+                            SystemMessages.Add(new Message() { Msg = networkHandler.Info, Username = User.Name });
+                            networkHandler.Info = null;
+                        });
                     }
                     Thread.Sleep(100);
                 }

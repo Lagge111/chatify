@@ -133,7 +133,6 @@ namespace ChatApplication.Assets
                 Messages.Clear();
                 
                 _info = "Connection Lost";
-                //MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
                 stopThread.Abort();
 
                 if (connection.Listner != null)
@@ -170,7 +169,6 @@ namespace ChatApplication.Assets
                 CanOnlyRead = false;
 
                 _info = "Connection Lost";
-                //MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
 
                 if (connection.Listner != null)
                 {
@@ -240,7 +238,6 @@ namespace ChatApplication.Assets
                     {
                         Console.WriteLine("NoPortEx: {0}", e.Message);
                         _info = "Invalid port";
-                        //MessageBox.Show("Invalid port", "Chatify by A3 Studio", MessageBoxButton.OK);
                     }
                 }
                 else if (type.ToString() == "s")
