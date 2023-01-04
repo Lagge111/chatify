@@ -33,6 +33,4 @@ namespace ChatApplication.Commands
             _action();
         }
     }
-
-    
 }

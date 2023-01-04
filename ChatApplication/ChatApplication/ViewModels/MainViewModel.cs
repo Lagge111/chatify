@@ -5,7 +5,6 @@ using ChatApplication.Commands;
 using ChatApplication.Models;
 using System.Threading;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ChatApplication.Assets;
@@ -31,6 +30,8 @@ namespace ChatApplication.ViewModels
         private ICommand _loadCommand;
         private ICommand _disconnectCommand;
         private ICommand _returnCommand;
+        private ICommand _denieCommand;
+        private ICommand _acceptCommand;
 
         public MainViewModel()
         {
@@ -51,15 +52,30 @@ namespace ChatApplication.ViewModels
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
                             Message deserializedMessage = JsonConvert.DeserializeObject<Message>(networkHandler.Connection.Data);
-                            if (deserializedMessage.Type == "message")
+                            Messages.Add(new Message() { Msg = deserializedMessage.Msg, Username = User.Name });
+                            networkHandler.Connection.Data = null;      
+                        });
+                    }
+                    if (networkHandler.Connection != null && networkHandler.Connection.Info != null)
+                    {
+                        App.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            SystemMessages.Clear();
+                            if (networkHandler.Connection.Info == "Connected!")
                             {
-                                Messages.Add(new Message() { Msg = deserializedMessage.Msg, Username = User.Name });
-                            } else if (deserializedMessage.Type == "abort")
-                            {
-                                SystemMessages.Clear();
-                                SystemMessages.Add(new Message() { Msg = "The other user has disconnected", Username = User.Name });
+                                Messages.Clear();
                             }
-                            networkHandler.Connection.Data = null;
+                            SystemMessages.Add(new Message() { Msg = networkHandler.Connection.Info, Username = User.Name });
+                            networkHandler.Connection.Info = null;
+                        });
+                    }
+                    if (networkHandler != null && networkHandler.Info != null)
+                    {
+                        App.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            SystemMessages.Clear();
+                            SystemMessages.Add(new Message() { Msg = networkHandler.Info, Username = User.Name });
+                            networkHandler.Info = null;
                         });
                     }
                     Thread.Sleep(100);
@@ -120,6 +136,37 @@ namespace ChatApplication.ViewModels
             }
         }
 
+        public bool CanSend
+        {
+            get
+            {
+
+                if (networkHandler.Connection != null)
+                {
+                    if (networkHandler.Connection.CanSend == true)
+                    {
+                        return true;
+                    }
+                }
+                return (false);
+            }
+        }
+
+        public bool CanDisconnect
+        {
+            get
+            {
+                if (networkHandler.Connection != null)
+                {
+                    if (networkHandler.Connection.Stream != null)
+                    {
+                        return true;
+                    }
+                } 
+                return (false);
+            }
+        }
+
 
         public bool CanBeep
         {
@@ -135,12 +182,27 @@ namespace ChatApplication.ViewModels
                 return (true);
             }
         }
+
+        public bool CanAcceptDenie
+        {
+            get
+            {
+                if(networkHandler.Connection != null)
+                {
+                    if (networkHandler.Connection.ChatRequestStatus == "pending")
+                    {
+                        return true;
+                    }
+                }
+                return (false);
+            }
+        }
         
         public ICommand BeepCommand
         {
             get
             {
-                    return _beepCommand ?? (_beepCommand = new SimpleCommand(() => networkHandler.Connection.SendBeep(), () => CanBeep));
+                    return _beepCommand ?? (_beepCommand = new SimpleCommand(() => networkHandler.Connection.SendBeep(), () => CanSend));
             }
 
         }
@@ -158,10 +220,26 @@ namespace ChatApplication.ViewModels
         {
             get
             {
-                return _sendCommand ?? (_sendCommand = new SimpleCommand(() => SendMessage(), () => CanExecute));
+                return _sendCommand ?? (_sendCommand = new SimpleCommand(() => SendMessage(), () => CanSend));
             }
         }
-       
+
+        public ICommand AcceptCommand
+        {
+            get
+            {
+                return _acceptCommand ?? (_acceptCommand = new SimpleCommand(() => networkHandler.Connection.AcceptRequest(), () => CanAcceptDenie));
+            }
+        }
+
+        public ICommand DenieCommand
+        {
+            get
+            {
+                return _denieCommand ?? (_denieCommand = new SimpleCommand(() => networkHandler.Connection.DenieRequest(), () => CanAcceptDenie));
+            }
+        }
+
         public ICommand SearchCommand
         {
             get
@@ -198,7 +276,7 @@ namespace ChatApplication.ViewModels
         {
             get
             {
-                return _disconnectCommand ?? (_disconnectCommand = new SimpleCommand(() => networkHandler.StopListen(), () => CanExecute));
+                return _disconnectCommand ?? (_disconnectCommand = new SimpleCommand(() => networkHandler.StopListen(), () => CanDisconnect));
             }
         }
 

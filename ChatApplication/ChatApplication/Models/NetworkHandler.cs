@@ -1,14 +1,7 @@
 ﻿using ChatApplication.Models;
-using ChatApplication.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Interop;
-using System.Windows;
 using System.Collections.ObjectModel;
 
 namespace ChatApplication.Assets
@@ -20,6 +13,7 @@ namespace ChatApplication.Assets
         private Models.Connection connection;
         private User _user;
         Thread listenThread, clientThread, stopThread;
+        private string _info;
 
         public NetworkHandler(User user)
         {
@@ -49,6 +43,19 @@ namespace ChatApplication.Assets
             get
             {
                 return _user;
+            }
+        }
+
+        public String Info
+        {
+            get
+            {
+                return _info;
+            }
+
+            set
+            {
+                _info = value;
             }
         }
 
@@ -120,11 +127,12 @@ namespace ChatApplication.Assets
                         Chats.Add(c);
                     }
                 }
+                connection.CanSend = false;
                 connection.objectCreated = false;
                 connection.userAdded = false;
                 Messages.Clear();
-
-                MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
+                
+                _info = "Connection Lost";
                 stopThread.Abort();
 
                 if (connection.Listner != null)
@@ -152,6 +160,7 @@ namespace ChatApplication.Assets
                     Chats.Add(c);
                 }
             }
+            connection.CanSend = false;
             connection.objectCreated = false;
             connection.userAdded = false;
 
@@ -159,7 +168,7 @@ namespace ChatApplication.Assets
             {
                 CanOnlyRead = false;
 
-                MessageBox.Show("Connection Lost", "Chatify by A3 Studio", MessageBoxButton.OK);
+                _info = "Connection Lost";
 
                 if (connection.Listner != null)
                 {
@@ -228,7 +237,7 @@ namespace ChatApplication.Assets
                     catch (ConnectionException e)
                     {
                         Console.WriteLine("NoPortEx: {0}", e.Message);
-                        MessageBox.Show("Invalid port", "Chatify by A3 Studio", MessageBoxButton.OK);
+                        _info = "Invalid port";
                     }
                 }
                 else if (type.ToString() == "s")

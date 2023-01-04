@@ -353,6 +353,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Column="0" 
                            Grid.Row="0" 
@@ -430,24 +432,66 @@
                            FontWeight="Bold" 
                            Foreground="#b3afaf" />
                     <StackPanel Grid.Row="1" Grid.Column="6" Background="#2c2f33">
-                        <ScrollViewer HorizontalAlignment="Center"
-                                  VerticalScrollBarVisibility="Hidden"/>
                         <ItemsControl ItemsSource="{Binding SystemMessages}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Height="Auto" 
+                                    <Label Height="Auto"
                                            FontFamily="Verdana" 
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            FontSize="10"
-                                           Foreground="#b3afaf"        
-                                           Text="{Binding Msg}" 
-                                           />
+                                           Foreground="#b3afaf"
+                                           >
+                                        
+                                        <TextBlock TextWrapping="Wrap"
+                                           Text="{Binding Msg}"
+                                                   Margin="0,0,0,0"/>
+                                    </Label>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
                     </StackPanel>
+                    <Button Grid.Column="6" 
+                        Grid.Row="3" 
+                        Command="{Binding AcceptCommand}" 
+                        IsEnabled="{Binding NetworkHandler.Connection, UpdateSourceTrigger=PropertyChanged}"
+                        Content="Accept" 
+                        FontFamily="Verdana" 
+                        FontWeight="Bold" 
+                        Foreground="#b3afaf"  
+                        Background="#3b6547" 
+                        BorderThickness="0" 
+                        Margin="0,0,116,0"
+                        Padding="8" 
+                            >
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" 
+                                    Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button Grid.Column="6" 
+                        Grid.Row="3" 
+                        Command="{Binding DenieCommand}" 
+                        IsEnabled="{Binding NetworkHandler.Connection, UpdateSourceTrigger=PropertyChanged}"
+                        Content="Denie" 
+                        FontFamily="Verdana" 
+                        FontWeight="Bold" 
+                        Foreground="#b3afaf"  
+                        Background="#500706" 
+                        BorderThickness="0" 
+                        Margin="116,0,0,0"
+                        Padding="8" 
+                            >
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" 
+                                    Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                 </Grid>
             </StackPanel>
         </StackPanel>
